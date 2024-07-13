@@ -1,6 +1,13 @@
 if (process.env.NODE_ENV !== "production") {
-    require("dotenv").config();
+    const result = require("dotenv").config();
+    if (result.error) {
+        console.error("Error loading .env file", result.error);
+    } else {
+        console.log("Environment variables:", result.parsed);
+    }
 }
+
+console.log("DATABASE_URL:", process.env.DATABASE_URL);
 
 const express = require("express");
 const app = express();
@@ -12,11 +19,11 @@ app.set("layout", "layouts/layout");
 app.use(expressLayouts);
 app.use(express.static("public"));
 
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 mongoose.connect(process.env.DATABASE_URL, {
     useNewUrlParser: true,
-    useUnifiedTopology: true, // Added for better connection handling
+    useUnifiedTopology: true,
 });
 
 const db = mongoose.connection;
@@ -27,4 +34,4 @@ const indexRouter = require("./routes/index");
 
 app.use("/", indexRouter);
 
-app.listen(process.env.PORT || 3000);
+app.listen(process.env.PORT || 4000);
